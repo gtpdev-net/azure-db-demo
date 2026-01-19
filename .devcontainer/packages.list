@@ -1,0 +1,112 @@
+
+# ================================================================================================
+# Package List for Debian-based DevContainer
+# ================================================================================================
+# This file contains all apt packages to be installed in the GitHub Copilot Bootcamp DevContainer.
+# 
+# Format:
+#   - Lines starting with # are comments or section headers (ignored during installation)
+#   - Package lines: <package-name>  # Optional inline comment describing the package
+#   - Blank lines are ignored
+#
+# Usage:
+#   The Dockerfile processes this file by:
+#   1. Filtering out comment-only lines (starting with #)
+#   2. Filtering out blank lines
+#   3. Extracting the first column (package name) from each line
+#   4. Installing all packages with apt-get
+#
+# To disable a package: Simply add # at the start of the line to comment it out
+# To add a package: Add a new line with the package name and comment in the appropriate section
+# ================================================================================================
+
+
+# ================================================================================================
+# Core System Utilities
+# ================================================================================================
+apt-transport-https         # Enables APT to download packages over HTTPS.
+ca-certificates             # Common CA certificates for SSL/TLS verification
+curl                        # Tool for transferring data with URLs (supports many protocols)
+dos2unix                    # Convert text files between DOS/Windows and Unix line endings
+git                         # Distributed version control system
+gnupg                       # GNU Privacy Guard for encryption and signing
+openssh-client              # OpenSSH client for secure remote access and file transfers
+# gosu                        # Tool to run commands as another user (better than sudo for containers)
+# grep                        # Pattern matching and text search utility
+lsb-release                 # Linux Standard Base release information
+# procps                      # Process monitoring utilities (ps, top, kill, etc.)
+# psmisc                      # Utilities for managing processes (killall, fuser, pstree)
+# software-properties-common  # Scripts for managing software repositories
+sudo                        # Execute commands as another user (typically root)
+wget                        # Network downloader for retrieving files via HTTP/HTTPS/FTP
+zsh                         # Z shell - powerful alternative to bash with better features
+
+
+# ================================================================================================
+# DNS and Network Utilities
+# ================================================================================================
+# bind9-host                  # DNS lookup utility for querying DNS servers
+# dnsutils                    # DNS utilities including dig and nslookup
+# iproute2                    # Modern networking tools (ip command replaces ifconfig)
+# iptables                    # Firewall configuration and packet filtering
+# iputils-ping                # Ping utility for network connectivity testing
+# mtr-tiny                    # Network diagnostic tool combining traceroute and ping
+# net-tools                   # Classic networking tools (ifconfig, netstat, etc.)
+# netcat-openbsd              # Network utility for TCP/UDP connections and port scanning
+# nmap                        # Network exploration tool and security scanner
+# tcpdump                     # Packet analyzer for network traffic monitoring
+# traceroute                  # Tool to trace the route packets take to a destination
+
+
+# ================================================================================================
+# Build Tools and Compilers
+# ================================================================================================
+# build-essential             # Meta-package containing GCC, g++, make, and other build tools
+
+
+# ================================================================================================
+# Development Libraries (required for compiling Python and other software from source)
+# ================================================================================================
+# libbz2-dev                  # bzip2 compression library development files
+# libdb5.3-dev                # Berkeley database development files
+# libexpat1-dev               # XML parsing library development files
+# libgdbm-dev                 # GNU database manager development files
+# liblzma-dev                 # XZ compression library development files
+# libncurses5-dev             # Terminal handling library (ncurses) development files
+# libncursesw5-dev            # Wide-character version of ncurses development files
+# libreadline-dev             # GNU readline library for command-line editing
+# libsqlite3-dev              # SQLite3 database engine development files
+# libssl-dev                  # SSL/TLS cryptographic library development files
+# tk-dev                      # Tk GUI toolkit development files
+# uuid-dev                    # UUID (Universally Unique Identifier) library development files
+# zlib1g-dev                  # Compression library development files
+
+# ================================================================================================
+# GUI and Browser Automation Libraries (needed for headless browser testing, Electron apps, etc.)
+# ================================================================================================
+# fonts-liberation            # Liberation fonts (metric-compatible with common fonts)
+# libasound2                  # ALSA (Advanced Linux Sound Architecture) library
+# libatk-bridge2.0-0          # Accessibility Toolkit bridge for assistive technologies
+# libatk1.0-0                 # Accessibility Toolkit for GNOME applications
+# libatspi2.0-0               # Assistive Technology Service Provider Interface
+# libcups2                    # Common UNIX Printing System library
+# libdrm2                     # Direct Rendering Manager library for graphics
+# libgbm1                     # Generic Buffer Management library for graphics
+# libgconf-2-4                # GNOME configuration database system
+# libgdk-pixbuf2.0-0          # Image loading library for GTK+
+# libgtk-3-0                  # GTK+ 3 graphical user interface library
+# libnspr4                    # NetScape Portable Runtime library
+# libnss3                     # Network Security Services libraries
+# libpangocairo-1.0-0         # Pango text rendering library with Cairo backend
+# libx11-xcb1                 # X11 protocol C-language binding with XCB extension
+# libxcb-dri3-0               # X C Binding for DRI3 extension
+# libxcb1                     # X protocol C-language Binding
+# libxcomposite1              # X11 Composite extension library
+# libxcursor1                 # X cursor management library
+# libxdamage1                 # X11 Damage extension library
+# libxfixes3                  # X11 miscellaneous fixes extension library
+# libxi6                      # X11 Input extension library
+# libxkbcommon0               # X keyboard handling library
+# libxrandr2                  # X11 RandR (Resize and Rotate) extension library
+# libxss1                     # X11 Screen Saver extension library
+# libxtst6                    # X11 Testing extension library (record and playback events)
