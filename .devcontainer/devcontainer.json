@@ -33,9 +33,10 @@
                 "ms-dotnettools.csharp",
                 "ms-dotnettools.csdevkit",
                 "ms-dotnettools.vscode-dotnet-runtime",
-				"ms-vscode.vscode-node-azure-pack",
-				"bierner.markdown-mermaid",
-				"hediet.vscode-drawio"
+                "ms-vscode.vscode-node-azure-pack",
+                "bierner.markdown-mermaid",
+                "hediet.vscode-drawio",
+                "ms-azuretools.vscode-containers"
             ]
         }
     },
