@@ -1,8 +1,10 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDBConnector", "CosmosDBConnector\CosmosDBConnector.csproj", "{829B0505-8BB4-9BC8-7EF0-858E01D5A909}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureSQLConnector", "AzureSQLConnector\AzureSQLConnector.csproj", "{1395F036-60E3-4499-ACF0-2D948939C92A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,6 +16,10 @@ Global
 		{829B0505-8BB4-9BC8-7EF0-858E01D5A909}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{829B0505-8BB4-9BC8-7EF0-858E01D5A909}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{829B0505-8BB4-9BC8-7EF0-858E01D5A909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1395F036-60E3-4499-ACF0-2D948939C92A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1395F036-60E3-4499-ACF0-2D948939C92A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1395F036-60E3-4499-ACF0-2D948939C92A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1395F036-60E3-4499-ACF0-2D948939C92A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
