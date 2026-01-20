@@ -1,4 +1,4 @@
-# cosmos-db-demo
+# Cosmos DB Connector Demo
 A simple demo application that connects to Azure Cosmos DB NoSQL using various authentication methods.
 
 ## Prerequisites
@@ -6,11 +6,15 @@ A simple demo application that connects to Azure Cosmos DB NoSQL using various a
 - Azure Cosmos DB account with NoSQL API
 - (Optional) Azure Cosmos DB Emulator for local development
 
+## Quick Start
+
+See [CONFIGURATION.md](CONFIGURATION.md) for detailed step-by-step setup instructions.
+
 ## Configuration
 
 ### Setting up appsettings.Development.json
 
-The application reads configuration from [CosmosDBConnector/appsettings.Development.json](CosmosDBConnector/appsettings.Development.json). You'll need to populate this file with your Cosmos DB connection details.
+The application reads configuration from [appsettings.Development.json](appsettings.Development.json). You'll need to populate this file with your Cosmos DB connection details.
 
 #### Required Settings
 
@@ -35,30 +39,62 @@ The application reads configuration from [CosmosDBConnector/appsettings.Developm
 5. **ConnectionMethod** (Required)
    - Specifies how to authenticate with Cosmos DB
    - Options:
-     - `ManagedIdentity` - **Recommended for Azure-hosted apps** (requires RBAC setup)
-     - `ConnectionString` - Easiest for local development
+     - `TestAll` - **Test all available connection methods** (recommended for initial setup)
+     - `ManagedIdentity` - For Azure-hosted apps (requires RBAC setup)
+     - `ConnectionString` - For local development
      - `AccountKey` - Alternative for development
      - `Emulator` - For local Cosmos DB Emulator
 
 #### Connection Method-Specific Settings
 
-##### For ConnectionString method:
-- **ConnectionString**
-  - Find in Azure Portal: Your Cosmos DB account → **Settings** → **Keys** → **Primary Connection String**
-  - ⚠️ Keep this secure - do not commit to source control
-
-##### For AccountKey method:
-- **AccountKey**
-  - Find in Azure Portal: Your Cosmos DB account → **Settings** → **Keys** → **Primary Key**
-  - ⚠️ Keep this secure - do not commit to source control
+Each connection method can be individually enabled/disabled and configured:
 
 ##### For ManagedIdentity method:
-- No additional settings required in appsettings
+```json
+"ManagedIdentity": {
+  "Enabled": true
+}
+```
+- No additional credentials required
 - **Requires proper RBAC role assignment** - even if you have Owner/Contributor at subscription level
 - Uses `DefaultAzureCredential` which supports:
   - Managed Identity (when running in Azure)
   - Azure CLI credentials (for local development with `az login`)
   - Visual Studio/VS Code credentials
+
+##### For ConnectionString method:
+```json
+"ConnectionString": {
+  "Enabled": true,
+  "Value": "AccountEndpoint=https://your-account.documents.azure.com:443/;AccountKey=your-key;"
+}
+```
+- **Value**
+  - Find in Azure Portal: Your Cosmos DB account → **Settings** → **Keys** → **Primary Connection String**
+  - ⚠️ Keep this secure - do not commit to source control
+
+##### For AccountKey method:
+```json
+"AccountKey": {
+  "Enabled": true,
+  "Value": "your-primary-or-secondary-key"
+}
+```
+- **Value**
+  - Find in Azure Portal: Your Cosmos DB account → **Settings** → **Keys** → **Primary Key**
+  - ⚠️ Keep this secure - do not commit to source control
+
+##### For Emulator method:
+```json
+"Emulator": {
+  "Enabled": true
+}
+```
+- No additional settings required
+- Uses local Cosmos DB Emulator endpoint
+- Emulator must be running locally
+
+#### Setting up RBAC for ManagedIdentity
 
 **Important:** Subscription-level roles (Owner, Contributor) only grant *control plane* access (manage the Cosmos DB resource itself). To access data, you need a *data plane* role assignment:
 
@@ -77,21 +113,53 @@ az cosmosdb sql role assignment create \
 
 **For local development**, if you don't want to set up RBAC, use `ConnectionString` or `AccountKey` methods instead, which bypass RBAC.
 
-##### For Emulator method:
-- No additional settings required
-- Uses local Cosmos DB Emulator endpoint
-
 ### Example Configuration
 
+#### Test All Methods (Recommended for initial setup)
 ```json
 {
   "CosmosDb": {
-    "AccountEndpoint": "https://your-cosmos-account.documents.azure.com:443/",
+    "AccountEndpoint": "https://your-account.documents.azure.com:443/",
     "DatabaseName": "MyDatabase",
     "ContainerName": "MyContainer",
     "PartitionKeyPath": "/id",
-    "ConnectionMethod": "ConnectionString",
-    "ConnectionString": "AccountEndpoint=https://...;AccountKey=...;"
+    "ConnectionMethod": "TestAll",
+    
+    "ManagedIdentity": {
+      "Enabled": false
+    },
+    
+    "ConnectionString": {
+      "Enabled": true,
+      "Value": "AccountEndpoint=https://your-account.documents.azure.com:443/;AccountKey=your-key=="
+    },
+    
+    "AccountKey": {
+      "Enabled": true,
+      "Value": "your-primary-key=="
+    },
+    
+    "Emulator": {
+      "Enabled": false
+    }
+  }
+}
+```
+
+#### Single Method
+```json
+{
+  "CosmosDb": {
+    "AccountEndpoint": "https://your-account.documents.azure.com:443/",
+    "DatabaseName": "MyDatabase",
+    "ContainerName": "MyContainer",
+    "PartitionKeyPath": "/id",
+    "ConnectionMethod": "AccountKey",
+    
+    "AccountKey": {
+      "Enabled": true,
+      "Value": "your-primary-key=="
+    }
   }
 }
 ```
