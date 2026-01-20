@@ -54,11 +54,32 @@ RUN apt-get update \
 
 
 # -----------------------------------------------------------------------------
+# Stage: install-zscaler
+# -----------------------------------------------------------------------------
+
+# Install ZScaler root certificates to enable SSL/TLS connections through corporate proxy
+# ZScaler performs SSL inspection, so its root certificate must be trusted by the system
+FROM install-packages AS install-zscaler
+
+# # Copy ZScaler certificate files from the build context to a temporary location
+# COPY ca-certificates/* /usr/local/share/ca-certificates
+
+# # Rebuild the system's certificate store to include the new ZScaler certificates
+# # This updates /etc/ssl/certs/ca-certificates.crt with the newly installed certificates
+# RUN update-ca-certificates
+
+# Set Node.js environment variable to trust system certificates
+# This is critical for VS Code's extension host and any Node.js processes
+# Without this, Node.js will not trust ZScaler-signed certificates
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+
+# -----------------------------------------------------------------------------
 # Stage: install-sqlcmd
 # -----------------------------------------------------------------------------
 
 # Install Microsoft SQL Server command-line tools (sqlcmd)
-FROM install-packages AS install-sqlcmd
+FROM install-zscaler AS install-sqlcmd
 
 # Add Microsoft's package repository and install mssql-tools
 RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
@@ -81,33 +102,12 @@ RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor
 
 
 # -----------------------------------------------------------------------------
-# Stage: install-zscaler
-# -----------------------------------------------------------------------------
-
-# Install ZScaler root certificates to enable SSL/TLS connections through corporate proxy
-# ZScaler performs SSL inspection, so its root certificate must be trusted by the system
-FROM install-sqlcmd AS install-zscaler
-
-# # Copy ZScaler certificate files from the build context to a temporary location
-# COPY ca-certificates/* /usr/local/share/ca-certificates
-
-# # Rebuild the system's certificate store to include the new ZScaler certificates
-# # This updates /etc/ssl/certs/ca-certificates.crt with the newly installed certificates
-# RUN update-ca-certificates
-
-# Set Node.js environment variable to trust system certificates
-# This is critical for VS Code's extension host and any Node.js processes
-# Without this, Node.js will not trust ZScaler-signed certificates
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
-
-
-# -----------------------------------------------------------------------------
 # Stage: user-setup
 # -----------------------------------------------------------------------------
 
 # Configure a non-root user for running the container
 # This follows security best practices by avoiding unnecessary root privileges
-FROM install-zscaler AS user-setup
+FROM install-sqlcmd AS user-setup
 
 # Create a non-root user for enhanced security
 # Running containers as root is a security risk; this follows the principle of least privilege

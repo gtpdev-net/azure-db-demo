@@ -397,3 +397,4 @@ appsettings.*.json
 .DS_Store
 .AppleDouble
 .LSOverride
+.devcontainer/ca-certificates/*
