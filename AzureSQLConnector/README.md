@@ -29,18 +29,47 @@ The application reads configuration from [appsettings.Development.json](appsetti
 4. **ConnectionMethod** (Required)
    - Specifies how to authenticate with Azure SQL Database
    - Options:
-     - `ManagedIdentity` - **Recommended for Azure-hosted apps** (requires Entra ID authentication)
-     - `ConnectionString` - Easiest for local development
-     - `SqlAuthentication` - Alternative for development with SQL username/password
+     - `TestAll` - **Test all available connection methods** (recommended for initial setup)
+     - `ManagedIdentity` - For Azure-hosted apps (requires Entra ID authentication)
+     - `ConnectionString` - For development with full connection string
+     - `SqlAuthentication` - For development with SQL username/password
 
 #### Connection Method-Specific Settings
 
+Each connection method can be individually enabled/disabled and configured:
+
+##### For ManagedIdentity method:
+```json
+"ManagedIdentity": {
+  "Enabled": true
+}
+```
+- No additional credentials required
+- Uses `DefaultAzureCredential` which supports:
+  - Managed Identity (when running in Azure)
+  - Azure CLI credentials (for local development with `az login`)
+  - Visual Studio/VS Code credentials
+
 ##### For ConnectionString method:
-- **ConnectionString**
+```json
+"ConnectionString": {
+  "Enabled": true,
+  "Value": "Server=tcp:your-server.database.windows.net,1433;Initial Catalog=your-database;User Id=your-username;Password=your-password;Encrypt=True;"
+}
+```
+- **Value**
   - Find in Azure Portal: Your SQL Database → **Settings** → **Connection strings** → **ADO.NET**
+  - Replace `{your_username}` and `{your_password}` with actual credentials
   - ⚠️ Keep this secure - do not commit to source control
 
 ##### For SqlAuthentication method:
+```json
+"SqlAuthentication": {
+  "Enabled": true,
+  "Username": "your-username",
+  "Password": "your-password"
+}
+```
 - **Username** - SQL Server authentication username
 - **Password** - SQL Server authentication password
   - Find in Azure Portal: Create during SQL Server setup or reset under **Settings** → **SQL databases** → **Set admin password**
@@ -79,14 +108,47 @@ The application reads configuration from [appsettings.Development.json](appsetti
 
 ### Example Configuration
 
+#### Test All Methods (Recommended for initial setup)
 ```json
 {
   "AzureSql": {
     "ServerName": "your-server.database.windows.net",
     "DatabaseName": "MyDatabase",
     "TableName": "TestTable",
-    "ConnectionMethod": "ConnectionString",
-    "ConnectionString": "Server=your-server.database.windows.net;Database=your-database;User Id=your-username;Password=your-password;Encrypt=True;"
+    "ConnectionMethod": "TestAll",
+    
+    "ManagedIdentity": {
+      "Enabled": true
+    },
+    
+    "ConnectionString": {
+      "Enabled": true,
+      "Value": "Server=tcp:your-server.database.windows.net,1433;Initial Catalog=MyDatabase;User Id=sqladmin;Password=YourPassword123!;Encrypt=True;"
+    },
+    
+    "SqlAuthentication": {
+      "Enabled": true,
+      "Username": "sqladmin",
+      "Password": "YourPassword123!"
+    }
+  }
+}
+```
+
+#### Single Method
+```json
+{
+  "AzureSql": {
+    "ServerName": "your-server.database.windows.net",
+    "DatabaseName": "MyDatabase",
+    "TableName": "TestTable",
+    "ConnectionMethod": "SqlAuthentication",
+    
+    "SqlAuthentication": {
+      "Enabled": true,
+      "Username": "sqladmin",
+      "Password": "YourPassword123!"
+    }
   }
 }
 ```
