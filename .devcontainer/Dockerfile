@@ -54,12 +54,39 @@ RUN apt-get update \
 
 
 # -----------------------------------------------------------------------------
+# Stage: install-sqlcmd
+# -----------------------------------------------------------------------------
+
+# Install Microsoft SQL Server command-line tools (sqlcmd)
+FROM install-packages AS install-sqlcmd
+
+# Add Microsoft's package repository and install mssql-tools
+RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg \
+        # Download and install Microsoft's GPG key for package verification
+    && curl -fsSL https://packages.microsoft.com/config/debian/12/prod.list | tee /etc/apt/sources.list.d/msprod.list \
+        # Add Microsoft's Debian 12 package repository
+    && apt-get update \
+        # Refresh package index with new repository
+    && ACCEPT_EULA=Y apt-get install -y --no-install-recommends mssql-tools18 unixodbc-dev \
+        # ACCEPT_EULA=Y: Automatically accept Microsoft's EULA
+        # mssql-tools18: Includes sqlcmd and bcp utilities
+        # unixodbc-dev: Required ODBC driver dependencies
+    && echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> /etc/profile.d/mssql-tools.sh \
+        # Add sqlcmd to PATH for all users via profile.d
+    && chmod +x /etc/profile.d/mssql-tools.sh \
+        # Make the script executable
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+        # Cleanup to reduce image size
+
+
+# -----------------------------------------------------------------------------
 # Stage: install-zscaler
 # -----------------------------------------------------------------------------
 
 # Install ZScaler root certificates to enable SSL/TLS connections through corporate proxy
 # ZScaler performs SSL inspection, so its root certificate must be trusted by the system
-FROM install-packages AS install-zscaler
+FROM install-sqlcmd AS install-zscaler
 
 # # Copy ZScaler certificate files from the build context to a temporary location
 # COPY ca-certificates/* /usr/local/share/ca-certificates
@@ -141,6 +168,10 @@ RUN chsh -s /usr/bin/zsh ${USER_NAME}
 
 # Set a variable for the path to zsh configuration file
 ENV SHELL_CONFIG=${USER_HOME}/.zshrc
+
+# Add sqlcmd to PATH in user's .zshrc for immediate availability
+RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ${USER_HOME}/.zshrc \
+    && chown ${USER_UID}:${USER_GID} ${USER_HOME}/.zshrc
 
 
 # ----------------------------------------------------------------------------------
